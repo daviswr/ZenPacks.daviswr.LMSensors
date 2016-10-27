@@ -16,17 +16,17 @@ device_classes:
                 description: The rotation speed of the fan in RPM
                 rrdtype: GAUGE 
         graphs:
+          Speed:
+            height: 100
+            width: 500
+            units: RPM
+            miny: 0
+            graphpoints:
               Speed:
-                height: 100
-                width: 500
-                units: RPM
-                miny: 0
-                graphpoints:
-                  Speed:
-                    dpName: lmFanSensorsValue_rpm
-                    lineType: LINE
-                    lineWidth: 2
-                    colorindex: 0
+                dpName: lmFanSensorsValue_rpm
+                lineType: LINE
+                lineWidth: 2
+                colorindex: 0
 
       PowerSupply:
         description: Voltage lines using LM-SENSORS-MIB
@@ -40,17 +40,17 @@ device_classes:
                 description: The voltage in mV
                 rrdtype: GAUGE
         graphs:
-              Voltage:
-                height: 100
-                width: 500
-                units: volts
-                graphpoints:
-                  Volts:
-                    dpName: lmVoltSensorsValue_millivolts
-                    lineType: LINE
-                    lineWidth: 2
-                    rpn: "1000,/"
-                    colorindex: 0
+          Voltage:
+            height: 100
+            width: 500
+            units: volts
+            graphpoints:
+              Volts:
+                dpName: lmVoltSensorsValue_millivolts
+                lineType: LINE
+                lineWidth: 2
+                rpn: "1000,/"
+                colorindex: 0
 
       TemperatureSensor:
         description: System temperatures using LM-SENSORS-MIB
@@ -67,25 +67,25 @@ device_classes:
                   temperature_celsius: "1000,/"
                   temperature_fahrenheit: "1000,/,9,*,5,/,32,+"
         graphs:
-              Celsius:
-                height: 100
-                width: 500
-                units: deg. C
-                graphpoints:
-                  Degrees:
-                    dpName: lmTempSensorsValue_temperature
-                    lineType: LINE
-                    lineWidth: 2
-                    rpn: "1000,/"
-                    colorindex: 0
-              Fahrenheit:
-                height: 100
-                width: 500
-                units: deg. F
-                graphpoints:
-                  Degrees:
-                    dpName: lmTempSensorsValue_temperature
-                    lineType: LINE
-                    lineWidth: 2
-                    rpn: "1000,/,9,*,5,/,32,+"
-                    colorindex: 0
+          Celsius:
+            height: 100
+            width: 500
+            units: deg. C
+            graphpoints:
+              Degrees:
+                dpName: lmTempSensorsValue_temperature
+                lineType: LINE
+                lineWidth: 2
+                rpn: "1000,/"
+                colorindex: 0
+          Fahrenheit:
+            height: 100
+            width: 500
+            units: deg. F
+            graphpoints:
+              Degrees:
+                dpName: lmTempSensorsValue_temperature
+                lineType: LINE
+                lineWidth: 2
+                rpn: "1000,/,9,*,5,/,32,+"
+                colorindex: 0
