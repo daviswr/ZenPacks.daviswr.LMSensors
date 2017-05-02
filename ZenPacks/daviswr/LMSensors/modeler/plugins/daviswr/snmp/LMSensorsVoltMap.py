@@ -7,6 +7,7 @@ maps SNMP voltage information onto PowerSupply components
 from Products.DataCollector.plugins.CollectorPlugin \
     import SnmpPlugin, GetTableMap
 
+
 class LMSensorsVoltMap(SnmpPlugin):
     maptype = 'PowerSupply'
     compname = 'hw'
@@ -14,12 +15,12 @@ class LMSensorsVoltMap(SnmpPlugin):
     modname = 'Products.ZenModel.PowerSupply'
 
     snmpGetTableMaps = (
-        GetTableMap('lmVoltSensorsEntry', '.1.3.6.1.4.1.2021.13.16.4.1',
-            {
-                '.2': 'lmVoltSensorsDevice',
-            }
-        ),
-    )
+        GetTableMap(
+            'lmVoltSensorsEntry',
+            '.1.3.6.1.4.1.2021.13.16.4.1',
+            {'.2': 'lmVoltSensorsDevice'}
+            ),
+        )
 
     def process(self, device, results, log):
         """collect snmp information from this device"""
@@ -29,15 +30,17 @@ class LMSensorsVoltMap(SnmpPlugin):
 
         sensorsTable = tabledata.get('lmVoltSensorsEntry')
         if sensorsTable is None:
-            log.error('Unable to get data for %s for lmVoltSensorsTable' % device.id)
+            log.error('Unable to get lmVoltSensorsTable for %s', device.id)
             return None
+        else:
+            log.debug('lmVoltSensorsTable has %s entries', len(sensorsTable))
 
         rm = self.relMap()
 
         for snmpindex, row in sensorsTable.items():
             id = row.get('lmVoltSensorsDevice', '')
             om = self.objectMap(row)
-            om.snmpindex  = snmpindex.strip('.')
+            om.snmpindex = snmpindex.strip('.')
             om.id = self.prepId(id)
             # Should ignore low, high, crit, and hyst values
             if self.hasThreshold(om, rm):

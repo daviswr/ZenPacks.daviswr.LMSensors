@@ -7,6 +7,7 @@ maps SNMP fan information onto Fan components
 from Products.DataCollector.plugins.CollectorPlugin \
     import SnmpPlugin, GetTableMap
 
+
 class LMSensorsFanMap(SnmpPlugin):
     maptype = 'FanMap'
     compname = 'hw'
@@ -14,12 +15,12 @@ class LMSensorsFanMap(SnmpPlugin):
     modname = 'Products.ZenModel.Fan'
 
     snmpGetTableMaps = (
-        GetTableMap('lmFanSensorsEntry', '.1.3.6.1.4.1.2021.13.16.3.1',
-            {
-                '.2': 'lmFanSensorsDevice',
-            }
-        ),
-    )
+        GetTableMap(
+            'lmFanSensorsEntry',
+            '.1.3.6.1.4.1.2021.13.16.3.1',
+            {'.2': 'lmFanSensorsDevice'}
+            ),
+        )
 
     def process(self, device, results, log):
         """collect snmp information from this device"""
@@ -29,15 +30,17 @@ class LMSensorsFanMap(SnmpPlugin):
 
         sensorsTable = tabledata.get('lmFanSensorsEntry')
         if sensorsTable is None:
-            log.error('Unable to get data for %s for lmFanSensorsTable' % device.id)
+            log.error('Unable to get lmFanSensorsTable for %s', device.id)
             return None
+        else:
+            log.debug('lmFanSensorsEntry has %s entries', len(sensorsTable))
 
         rm = self.relMap()
 
         for snmpindex, row in sensorsTable.items():
             id = row.get('lmFanSensorsDevice', '')
             om = self.objectMap(row)
-            om.snmpindex  = snmpindex.strip('.')
+            om.snmpindex = snmpindex.strip('.')
             om.id = self.prepId(id)
             # Should ignore low, high, crit, and hyst values
             if self.hasThreshold(om, rm):

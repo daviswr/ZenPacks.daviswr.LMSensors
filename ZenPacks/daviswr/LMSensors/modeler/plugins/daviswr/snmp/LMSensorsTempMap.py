@@ -7,6 +7,7 @@ maps SNMP temperature sensor information onto Temperature Sensor components
 from Products.DataCollector.plugins.CollectorPlugin \
     import SnmpPlugin, GetTableMap
 
+
 class LMSensorsTempMap(SnmpPlugin):
     maptype = 'TemperatureSensorMap'
     compname = 'hw'
@@ -14,12 +15,12 @@ class LMSensorsTempMap(SnmpPlugin):
     modname = 'Products.ZenModel.TemperatureSensor'
 
     snmpGetTableMaps = (
-        GetTableMap('lmTempSensorsEntry', '.1.3.6.1.4.1.2021.13.16.2.1',
-            {
-                '.2': 'lmTempSensorsDevice',
-            }
-        ),
-    )
+        GetTableMap(
+            'lmTempSensorsEntry',
+            '.1.3.6.1.4.1.2021.13.16.2.1',
+            {'.2': 'lmTempSensorsDevice'}
+            ),
+        )
 
     def process(self, device, results, log):
         """collect snmp information from this device"""
@@ -29,15 +30,17 @@ class LMSensorsTempMap(SnmpPlugin):
 
         sensorsTable = tabledata.get('lmTempSensorsEntry')
         if sensorsTable is None:
-            log.error('Unable to get data for %s for lmTempSensorsTable' % device.id)
+            log.error('Unable to get lmTempSensorsTable for %s', device.id)
             return None
+        else:
+            log.debug('lmTempSensorsTable has %s entries', len(sensorsTable))
 
         rm = self.relMap()
 
         for snmpindex, row in sensorsTable.items():
             id = row.get('lmTempSensorsDevice', '')
             om = self.objectMap(row)
-            om.snmpindex  = snmpindex.strip('.')
+            om.snmpindex = snmpindex.strip('.')
             om.id = self.prepId(id)
             # Should ignore low, high, crit, and hyst values
             if self.hasThreshold(om, rm):
